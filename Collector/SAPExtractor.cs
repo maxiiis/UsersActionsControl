@@ -1,8 +1,7 @@
 ﻿using ERPConnect;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml;
+using System.Data;
+using System.Xml.XPath;
 
 namespace Collector
 {
@@ -70,10 +69,81 @@ namespace Collector
 #elif TEST
 
             //загрузка из tp.csv
+            ExtractFromFile(3, 2);
 
-            
 #endif
             //TODO: сохранение в очередь
+        }
+
+        
+        private DataTable ExtractFromFile(int count, int start = 0)
+        {
+
+            DataTable dataTable = new DataTable();
+
+            XPathDocument document = new XPathDocument("tp.xml");
+
+            XPathNavigator navigator = document.CreateNavigator();
+
+
+            const string URI = "urn:schemas-microsoft-com:office:spreadsheet";
+
+            navigator.MoveToFollowing("Table", URI);
+            navigator.MoveToFirstAttribute();
+            int columnsCount = Convert.ToInt32(navigator.Value);
+            navigator.MoveToParent();
+
+            XPathNodeIterator rowIterator = navigator.SelectChildren("Row", URI);
+            rowIterator.MoveNext();
+
+            //заполняем столбцы datatable из 1 строки xml
+            XPathNodeIterator cellIterator = rowIterator.Current.SelectChildren("Cell", URI);
+            cellIterator.MoveNext();
+            for (int i = 0; i < columnsCount; i++)
+            {
+                dataTable.Columns.Add(cellIterator.Current.Value);
+                cellIterator.MoveNext();
+            }
+
+            //заполняем строки datatable
+            for (int i = 0; i < count + start; i++)
+            {
+                rowIterator.MoveNext();
+                if (i < start) continue;
+
+                string[] rowString = new string[columnsCount];
+                cellIterator = rowIterator.Current.SelectChildren("Cell", URI);
+                cellIterator.MoveNext();
+                for (int j = 0; j < columnsCount; j++)
+                {
+                    if (cellIterator.Current.MoveToFirstAttribute())
+                    {
+                        if (cellIterator.Current.Name == "ss:Index")
+                        {
+                            int current = Convert.ToInt32(cellIterator.Current.Value) - 1;
+                            cellIterator.Current.MoveToParent();
+                            rowString[current] = cellIterator.Current.Value;
+                            j = current;
+                        }
+                        else 
+                        {
+                            cellIterator.Current.MoveToParent();
+                            rowString[j] = cellIterator.Current.Value;
+                        }
+                        
+                    }
+                    else
+                    {
+                        rowString[j] = cellIterator.Current.Value;
+                    }
+                    cellIterator.MoveNext();
+                }
+
+                dataTable.Rows.Add(rowString);
+            }
+
+
+            return dataTable;
         }
 
         public override void SendData()
@@ -82,6 +152,6 @@ namespace Collector
             throw new NotImplementedException();
         }
 
-        
+
     }
 }
