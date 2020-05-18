@@ -14,6 +14,6 @@ namespace EFModels.LogsDB
         public DateTime TimeStamp { get; set; }
         public int Cost { get; set; }
 
-        public EventLogData eventLogData { get; set; }
+        public EventLogData EventLogData { get; set; }
     }
 }
