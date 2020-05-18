@@ -1,6 +1,9 @@
-﻿using ERPConnect;
+﻿using EFModels.LogsDB;
+using ERPConnect;
 using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Reflection;
 using System.Xml.XPath;
 
 namespace Collector
@@ -69,17 +72,16 @@ namespace Collector
 #elif TEST
 
             //загрузка из tp.csv
-            ExtractFromFile(3, 2);
+            ExtractFromFile();
 
 #endif
             //TODO: сохранение в очередь
         }
 
-        
-        private DataTable ExtractFromFile(int count, int start = 0)
-        {
 
-            DataTable dataTable = new DataTable();
+        private void ExtractFromFile(int count = 0, int start = 0)
+        {
+            LogDBContext context = new LogDBContext();
 
             XPathDocument document = new XPathDocument("tp.xml");
 
@@ -89,29 +91,44 @@ namespace Collector
             const string URI = "urn:schemas-microsoft-com:office:spreadsheet";
 
             navigator.MoveToFollowing("Table", URI);
+
+            
+
             navigator.MoveToFirstAttribute();
             int columnsCount = Convert.ToInt32(navigator.Value);
+            navigator.MoveToNextAttribute();
+            int RowsCount = Convert.ToInt32(navigator.Value);
+
             navigator.MoveToParent();
 
             XPathNodeIterator rowIterator = navigator.SelectChildren("Row", URI);
             rowIterator.MoveNext();
 
-            //заполняем столбцы datatable из 1 строки xml
+            //получаем столбцы из 1 строки xml
             XPathNodeIterator cellIterator = rowIterator.Current.SelectChildren("Cell", URI);
             cellIterator.MoveNext();
+
+            List<string> columnsName = new List<string>();
+
             for (int i = 0; i < columnsCount; i++)
             {
-                dataTable.Columns.Add(cellIterator.Current.Value);
+                columnsName.Add(cellIterator.Current.Value);
                 cellIterator.MoveNext();
             }
 
-            //заполняем строки datatable
-            for (int i = 0; i < count + start; i++)
+            //заполняем логи
+            int MaxRows;
+            MaxRows = count + start == 0 ? RowsCount - 1 : count + start;
+
+            for (int i = 0; i < MaxRows; i++)
             {
                 rowIterator.MoveNext();
                 if (i < start) continue;
 
-                string[] rowString = new string[columnsCount];
+                EventLog log = new EventLog();
+
+                EventLogData logData = new EventLogData();
+
                 cellIterator = rowIterator.Current.SelectChildren("Cell", URI);
                 cellIterator.MoveNext();
                 for (int j = 0; j < columnsCount; j++)
@@ -122,28 +139,51 @@ namespace Collector
                         {
                             int current = Convert.ToInt32(cellIterator.Current.Value) - 1;
                             cellIterator.Current.MoveToParent();
-                            rowString[current] = cellIterator.Current.Value;
+
+                            string colName = columnsName[current];
+                            string currentValue = cellIterator.Current.Value;
+                            FillLogField(currentValue, colName,ref log,ref logData);
+
                             j = current;
                         }
                         else 
                         {
                             cellIterator.Current.MoveToParent();
-                            rowString[j] = cellIterator.Current.Value;
+                            string colName = columnsName[j];
+                            string currentValue = cellIterator.Current.Value;
+                            FillLogField(currentValue, colName, ref log, ref logData);
                         }
                         
                     }
                     else
                     {
-                        rowString[j] = cellIterator.Current.Value;
+                        string colName = columnsName[j];
+                        string currentValue = cellIterator.Current.Value;
+                        FillLogField(currentValue, colName, ref log, ref logData);
                     }
                     cellIterator.MoveNext();
                 }
 
-                dataTable.Rows.Add(rowString);
+                log.EventLogData = logData;
+                context.EventLogs.Add(log);
+                context.SaveChanges();
             }
+        }
 
-
-            return dataTable;
+        private void FillLogField(string currentValue, string colName,ref  EventLog log,ref  EventLogData logData)
+        {
+            switch (colName)
+            {
+                case "CaseId": log.CaseId = Convert.ToInt64(currentValue); break;
+                case "TimeStamp": log.TimeStamp = Convert.ToDateTime(currentValue); break;
+                case "Resourse": log.Resourse = currentValue; break;
+                case "Activity": log.Activity = currentValue; break;
+                case "ActivityText": logData.ActivityText = currentValue; break;
+                case "ActivityText2": logData.ActivityText2 = currentValue; break;
+                case "ResourseDepartment": logData.ResourseDepartment = currentValue; break;
+                case "ResourseFilial": logData.ResourseFilial = currentValue; break;
+                case "ResourseFIO": logData.ResourseFIO = currentValue; break;
+            }
         }
 
         public override void SendData()
