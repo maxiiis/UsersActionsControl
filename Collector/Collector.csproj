@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\EFModels\EFModels.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="ERPConnect45">
       <HintPath>..\..\..\..\..\..\..\..\..\Program Files\ERPConnect\ERPConnect45.dll</HintPath>
       <Private>true</Private>

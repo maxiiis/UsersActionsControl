@@ -9,6 +9,9 @@ namespace EFModels.LogsDB
 
         //}
 
+        public DbSet<EventLog> EventLogs { get; set; }
+        public DbSet<EventLogData> EventLogDatas { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=LogDB;Username=postgres;Password=password");
