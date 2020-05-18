@@ -9,8 +9,8 @@ namespace EFModels.LogsDB
         public string ResourseFIO { get; set; }
         public string ResourseDepartment { get; set; }
         public string ResourseFilial { get; set; }
-        public string ActivivtyText { get; set; }
-        public string ActivivtyText2 { get; set; }
+        public string ActivityText { get; set; }
+        public string ActivityText2 { get; set; }
         public EventLog eventLog { get; set; }
     }
 }
