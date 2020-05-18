@@ -11,6 +11,9 @@ namespace EFModels.MainDB
             
         //}
 
+        public DbSet<Connection> Connections { get; set; }
+        public DbSet<BpStructure> BpStructures { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=MainDB;Username=postgres;Password=password");
