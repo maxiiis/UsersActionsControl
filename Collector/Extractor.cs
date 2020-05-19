@@ -9,7 +9,6 @@ namespace Collector
     /// </summary>
     public abstract class Extractor :IDisposable
     {
-        //TODO: заменить на файл, как вариант
         protected Queue<string> Queue = new Queue<string>();
 
         /// <summary>

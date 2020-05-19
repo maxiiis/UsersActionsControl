@@ -3,6 +3,8 @@ using ERPConnect;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using System.Xml.XPath;
@@ -24,6 +26,7 @@ namespace Collector
         /// <param name="functionName">Название функции в SAP</param>
         public SAPExtractor(string connectionString, string functionName)
         {
+            LoadFromLocalQueue();
 #if !TEST
             try
             {
@@ -51,6 +54,7 @@ namespace Collector
 
         public override void CloseConnect()
         {
+            SaveInLocalQueue();
             Connection.Close();
         }
 
@@ -71,6 +75,8 @@ namespace Collector
             function.Tables[0].ToADOTable();
             //
 #elif TEST
+
+            LoadFromLocalQueue();
 
             //загрузка из tp.csv
             var data = ExtractFromFile(10);
@@ -143,18 +149,18 @@ namespace Collector
 
                             string colName = columnsName[current];
                             string currentValue = cellIterator.Current.Value;
-                            FillLogField(currentValue, colName,ref log,ref logData);
+                            FillLogField(currentValue, colName, ref log, ref logData);
 
                             j = current;
                         }
-                        else 
+                        else
                         {
                             cellIterator.Current.MoveToParent();
                             string colName = columnsName[j];
                             string currentValue = cellIterator.Current.Value;
                             FillLogField(currentValue, colName, ref log, ref logData);
                         }
-                        
+
                     }
                     else
                     {
@@ -172,7 +178,7 @@ namespace Collector
             return results;
         }
 
-        private void FillLogField(string currentValue, string colName,ref  EventLog log,ref  EventLogData logData)
+        private void FillLogField(string currentValue, string colName, ref EventLog log, ref EventLogData logData)
         {
             switch (colName)
             {
@@ -190,14 +196,57 @@ namespace Collector
 
         public override void SendData()
         {
+            LoadFromLocalQueue();
+
             LogDBContext context = new LogDBContext();
-            foreach (var d in Queue)
+            while (Queue.Count != 0)
             {
-                context.Add(JsonSerializer.Deserialize<EventLog>(d));
+                context.Add(JsonSerializer.Deserialize<EventLog>(Queue.Dequeue()));
             }
-            context.SaveChanges();
+            try
+            {
+                context.SaveChanges();
+            }
+            catch
+            {
+                SaveInLocalQueue();
+            }
         }
 
+        //Сохранение результатов в файлы
+        private void SaveInLocalQueue()
+        {
+            Type extractorType = GetType();
+            if (!Directory.Exists(extractorType.Name))
+                Directory.CreateDirectory(extractorType.Name);
 
+            while (Queue.Count != 0)
+            {
+                string path = DateTime.Now.ToString("o").Replace(':', '-');
+                path = $@"{extractorType.Name}\{path}.json";
+                File.WriteAllText(path, Queue.Dequeue());
+            }
+        }
+
+        //Загрузка результатов из файлов
+        private void LoadFromLocalQueue()
+        {
+            Type extractorType = GetType();
+
+            if (!Directory.Exists(extractorType.Name))
+                return;
+
+            IEnumerable<string> files = Directory.EnumerateFiles(extractorType.Name);
+
+            if (files.Count() > 0)
+            {
+                while (files.Count() != 0)
+                {
+                    string data = File.ReadAllText(files.First());
+                    Queue.Enqueue(data);
+                    File.Delete(files.First());
+                }
+            }
+        }
     }
 }
