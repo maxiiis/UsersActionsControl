@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Reflection;
+using System.Text.Json;
 using System.Xml.XPath;
 
 namespace Collector
@@ -72,28 +73,28 @@ namespace Collector
 #elif TEST
 
             //загрузка из tp.csv
-            ExtractFromFile();
+            var data = ExtractFromFile(10);
 
+            foreach (var d in data)
+            {
+                Queue.Enqueue(JsonSerializer.Serialize(d));
+            }
+
+            SendData();
 #endif
-            //TODO: сохранение в очередь
         }
 
 
-        private void ExtractFromFile(int count = 0, int start = 0)
+        private List<EventLog> ExtractFromFile(int count = 0, int start = 0)
         {
-            LogDBContext context = new LogDBContext();
+            List<EventLog> results = new List<EventLog>();
 
             XPathDocument document = new XPathDocument("tp.xml");
-
             XPathNavigator navigator = document.CreateNavigator();
 
-
+            //навигация по xml к строкам
             const string URI = "urn:schemas-microsoft-com:office:spreadsheet";
-
             navigator.MoveToFollowing("Table", URI);
-
-            
-
             navigator.MoveToFirstAttribute();
             int columnsCount = Convert.ToInt32(navigator.Value);
             navigator.MoveToNextAttribute();
@@ -165,9 +166,10 @@ namespace Collector
                 }
 
                 log.EventLogData = logData;
-                context.EventLogs.Add(log);
-                context.SaveChanges();
+                results.Add(log);
             }
+
+            return results;
         }
 
         private void FillLogField(string currentValue, string colName,ref  EventLog log,ref  EventLogData logData)
@@ -188,8 +190,12 @@ namespace Collector
 
         public override void SendData()
         {
-            //TODO: отправка данных из очереди
-            throw new NotImplementedException();
+            LogDBContext context = new LogDBContext();
+            foreach (var d in Queue)
+            {
+                context.Add(JsonSerializer.Deserialize<EventLog>(d));
+            }
+            context.SaveChanges();
         }
 
 
