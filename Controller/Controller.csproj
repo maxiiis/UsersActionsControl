@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Collector\Collector.csproj" />
+    <ProjectReference Include="..\EFModels\EFModels.csproj" />
   </ItemGroup>
 
 </Project>

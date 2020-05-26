@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Controller
+namespace EFModels
 {
     public class Case
     {

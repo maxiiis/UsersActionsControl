@@ -1,4 +1,5 @@
 ﻿using Collector;
+using EFModels;
 using EFModels.LogsDB;
 using EFModels.MainDB;
 using System;
