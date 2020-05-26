@@ -10,9 +10,9 @@ namespace EFModels.MainDB
         //{
             
         //}
-
-        public DbSet<Connection> Connections { get; set; }
-        public DbSet<BpStructure> BpStructures { get; set; }
+        public DbSet<System> Systems { get; set; }
+        public DbSet<BP> BPs { get; set; }
+        public DbSet<BPCase> BPCases { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

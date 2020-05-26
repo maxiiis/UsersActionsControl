@@ -7,6 +7,10 @@
   <ItemGroup>
     <Compile Remove="Migrations\LogDBMigrations\20200518120449_AddDbSets.cs" />
     <Compile Remove="Migrations\LogDBMigrations\20200518120449_AddDbSets.Designer.cs" />
+    <Compile Remove="Migrations\MainDBMigration\20200526161017_NewMainDBStructure.cs" />
+    <Compile Remove="Migrations\MainDBMigration\20200526161017_NewMainDBStructure.Designer.cs" />
+    <Compile Remove="Migrations\MainDBMigration\20200526161941_NewMainDBStructure.cs" />
+    <Compile Remove="Migrations\MainDBMigration\20200526161941_NewMainDBStructure.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
