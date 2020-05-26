@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Collector", "Collector\Collector.csproj", "{93575555-8A8F-4C4B-96AE-885B6C7F1A95}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFModels", "EFModels\EFModels.csproj", "{DB14E646-5899-4186-B0B7-061622465222}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EFModels", "EFModels\EFModels.csproj", "{DB14E646-5899-4186-B0B7-061622465222}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Controller", "Controler\Controller.csproj", "{B5B07A10-FFDB-484C-B08D-264F907BBCC8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,6 +28,12 @@ Global
 		{DB14E646-5899-4186-B0B7-061622465222}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DB14E646-5899-4186-B0B7-061622465222}.TEST|Any CPU.ActiveCfg = Debug|Any CPU
 		{DB14E646-5899-4186-B0B7-061622465222}.TEST|Any CPU.Build.0 = Debug|Any CPU
+		{B5B07A10-FFDB-484C-B08D-264F907BBCC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5B07A10-FFDB-484C-B08D-264F907BBCC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5B07A10-FFDB-484C-B08D-264F907BBCC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5B07A10-FFDB-484C-B08D-264F907BBCC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5B07A10-FFDB-484C-B08D-264F907BBCC8}.TEST|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5B07A10-FFDB-484C-B08D-264F907BBCC8}.TEST|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
