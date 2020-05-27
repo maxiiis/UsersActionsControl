@@ -32,7 +32,7 @@ namespace EFModels
             else
             {
                 @event.Previous.Add(Events.Last());
-                Events.Last().Next.Add(@event,1);
+                Events.Last().Next.Add(new KeyValuePair<Event, int>( @event,1));
                 Events.Add(@event);
             }
 
@@ -60,11 +60,11 @@ namespace EFModels
                         var NextEvent = PrevEvent.Next.FirstOrDefault(s => s.Key.Name == Event.Name);
                         if (NextEvent.Equals(default(KeyValuePair<Event, int>)))
                         {
-                            PrevEvent.Next.Add(Event, 1);
+                            PrevEvent.Next.Add(new KeyValuePair<Event, int>(Event, 1));
                         }
                         else
                         {
-                            PrevEvent.Next[Event]++;
+                            NextEvent = new KeyValuePair<Event, int>(Event, NextEvent.Value+1);
                         }
                     }
                 }
@@ -83,7 +83,7 @@ namespace EFModels
                     var NextEvent = PrevEvent.Next.FirstOrDefault(s => s.Key.Name == @event.Name);
                     if (NextEvent.Equals(default(KeyValuePair<Event, int>)))
                     {
-                        PrevEvent.Next.Add(@event,1);
+                        PrevEvent.Next.Add(new KeyValuePair<Event,int>(@event,1));
                         Events.Add(@event);
                     }
                 }
@@ -98,7 +98,7 @@ namespace EFModels
 
     public class Event
     {
-        public Dictionary<Event, int> Next { get; set; }
+        public List<KeyValuePair<Event, int>> Next { get; set; }
         public List<Event> Previous { get; set; }
         public string Name { get; set; }
         public DateTime TimeStamp { get; set; }
@@ -107,7 +107,7 @@ namespace EFModels
         public Event(string name)
         {
             Name = name;
-            Next = new Dictionary<Event, int>();
+            Next = new List<KeyValuePair<Event, int>>();
             Previous = new List<Event>();
             Count = 1;
         }
@@ -115,11 +115,11 @@ namespace EFModels
         public Event(Event @event)
         {
             Name = @event.Name;
-            Next = new Dictionary<Event, int>();
+            Next = new List<KeyValuePair<Event, int>>();
 
             foreach (var v in @event.Next)
             {
-                Next.Add(v.Key, v.Value);
+                Next.Add(new KeyValuePair<Event, int>(v.Key, v.Value));
             }
 
             Previous = new List<Event>();

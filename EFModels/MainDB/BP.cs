@@ -15,6 +15,6 @@ namespace EFModels.MainDB
         public string Structure { get; set; }
 
         public System System { get; set; }
-        public BPCase BPCase { get; set; }
+        public List<BPCase> BPCases { get; set; }
     }
 }
