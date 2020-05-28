@@ -11,7 +11,7 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Button Content="Systems" HorizontalAlignment="Left" Margin="27,27,0,0" VerticalAlignment="Top" Height="87" Width="124"/>
-        <Button Content="BP" HorizontalAlignment="Left" Margin="344,27,0,0" VerticalAlignment="Top" Height="87" Width="124"/>
+        <Button Content="BP" HorizontalAlignment="Left" Margin="344,27,0,0" VerticalAlignment="Top" Height="87" Width="124" Click="BP_Click"/>
         <Button Content="Logs" HorizontalAlignment="Center" VerticalAlignment="Top" Height="87" Width="124" Margin="0,27,0,0"/>
         <Button Content="Events" HorizontalAlignment="Left" Margin="27,152,0,0" VerticalAlignment="Top" Height="87" Width="124"/>
         <Button Content="Users" HorizontalAlignment="Left" Margin="183,152,0,0" VerticalAlignment="Top" Height="87" Width="124"/>

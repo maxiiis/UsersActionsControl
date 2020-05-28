@@ -11,5 +11,10 @@ namespace UI
         {
             InitializeComponent();
         }
+
+        private void BP_Click(object sender, RoutedEventArgs e)
+        {
+            new BPs().Show();
+        }
     }
 }
