@@ -17,7 +17,10 @@
         </Grid.RowDefinitions>
         
         <DataGrid x:Name="dataGrid" AutoGenerateColumns="True" Width="300" HorizontalAlignment="Left"
-                  SelectionChanged="dataGrid_SelectionChanged" Grid.Column="0" Grid.Row="1"/>
+                  SelectionChanged="dataGrid_SelectionChanged" Grid.Column="0" Grid.Row="1"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  SelectionMode="Single"/>
 
         <graphx:ZoomControl x:Name="zoomctrl" Grid.Column="1" Grid.Row="1">
             <models:GraphAreaExample x:Name="Area"/>

@@ -1,6 +1,8 @@
 ﻿using EFModels;
 using EFModels.LogsDB;
 using EFModels.MainDB;
+using GraphX.Common.Enums;
+using GraphX.Controls;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,6 +17,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using UI.Models;
 
 namespace UI
 {
@@ -23,7 +26,7 @@ namespace UI
     /// </summary>
     public partial class BPs : Window
     {
-        private int Stage = 1;
+        private int Stage = 0;
 
         public BPs()
         {
@@ -59,7 +62,7 @@ namespace UI
             switch (stage)
             {
                 case 0:
-                    
+
                     var BPs = mainDB.BPs.Select(
                         b => new BPdto
                         {
@@ -76,31 +79,92 @@ namespace UI
                     var Cases = mainDB.BPCases.Where(b => b.BPId == BPId).ToList();
                     dataGrid.ItemsSource = Cases;
                     dataGrid.Columns.Last().Visibility = Visibility.Collapsed;
-                    
+
                     break;
             }
+            dataGrid.SelectedIndex = 0;
             Stage = stage;
         }
 
         private void dataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (Stage == 1)
+            if (dataGrid.SelectedItem != null)
             {
-                if (dataGrid.SelectedItem != null)
+                Case newCase;
+                if (Stage == 1)
                 {
-                    Case newCase;
-
+                    //visualize case
                     BPCase selectedRow = dataGrid.SelectedItem as BPCase;
                     var CaseId = selectedRow.CaseId;
                     if (CaseId == -1)
                         newCase = new CaseBuilder().CreateGeneralCase();
                     else
                         newCase = new CaseBuilder().CreateCase(CaseId);
+                }
+                else
+                {
+                    //build general case
+                    var selectedBP = dataGrid.SelectedItem as BPdto;
+                    MainDBContext mainDB = new MainDBContext();
+                    var BPnae = mainDB.BPs.FirstOrDefault(s=>s.Name==selectedBP.Название);
 
-                    //visualize case
+                    newCase = new CaseBuilder().CreateGeneralCase();
+
+                    GraphArea_Setup(newCase);
+                    Area.GenerateGraph();
+                    Area.SetEdgesDashStyle(EdgeDashStyle.Solid);
+
+                    Area.ShowAllEdgesLabels(true);
+
+                    zoomctrl.ZoomToFill();
+
                 }
             }
         }
+        private GraphExample Graph_Setup(Case @case)
+        {
+            var dataGraph = new GraphExample();
+
+            foreach (var ev in @case.Events)
+            {
+                var dataVertex = new DataVertex(ev.Name);
+
+                dataGraph.AddVertex(dataVertex);
+            }
+
+            var vlist = dataGraph.Vertices.ToList();
+            foreach (var ev in @case.Events)
+            {
+                foreach (var next in ev.Next)
+                {
+                    var dataEdge = new DataEdge(vlist.FirstOrDefault(s=>s.Text==ev.Name), vlist.FirstOrDefault(s=>s.Text==next.Key.Name), next.Key.Count) { Text = next.Key.Count.ToString() };
+                    dataGraph.AddEdge(dataEdge);
+                }
+            }
+
+            return dataGraph;
+        }
+
+        private void GraphArea_Setup(Case @case)
+        {
+            var logicCore = new GXLogicCoreExample() { Graph = Graph_Setup(@case) };
+            logicCore.DefaultLayoutAlgorithm = LayoutAlgorithmTypeEnum.EfficientSugiyama;
+            logicCore.DefaultLayoutAlgorithmParams = logicCore.AlgorithmFactory.CreateLayoutParameters(LayoutAlgorithmTypeEnum.EfficientSugiyama);
+            
+
+            logicCore.DefaultOverlapRemovalAlgorithm = OverlapRemovalAlgorithmTypeEnum.FSA;
+
+            logicCore.DefaultOverlapRemovalAlgorithmParams.HorizontalGap = 100;
+            logicCore.DefaultOverlapRemovalAlgorithmParams.VerticalGap = 100;
+
+
+            logicCore.DefaultEdgeRoutingAlgorithm = EdgeRoutingAlgorithmTypeEnum.Bundling;
+
+            logicCore.AsyncAlgorithmCompute = true;
+
+            Area.LogicCore = logicCore;
+        }
+
     }
 
     public class BPdto
