@@ -22,7 +22,7 @@ namespace EFModels
             return newCase;
         }
 
-        public Case CreateGeneralCase()
+        public Case CreateGeneralCase(string BpName="")
         {
             LogDBContext logDB = new LogDBContext();
             var s = logDB.EventLogs.OrderBy(s => s.CaseId).ThenBy(s => s.TimeStamp).ToList();
