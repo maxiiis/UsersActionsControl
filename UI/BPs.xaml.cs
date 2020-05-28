@@ -82,8 +82,9 @@ namespace UI
 
                     break;
             }
-            dataGrid.SelectedIndex = 0;
+            
             Stage = stage;
+            dataGrid.SelectedIndex = 0;
         }
 
         private void dataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -106,12 +107,13 @@ namespace UI
                     //build general case
                     var selectedBP = dataGrid.SelectedItem as BPdto;
                     MainDBContext mainDB = new MainDBContext();
-                    var BPnae = mainDB.BPs.FirstOrDefault(s=>s.Name==selectedBP.Название);
+                    var BPname = mainDB.BPs.FirstOrDefault(s=>s.Name==selectedBP.Название).Name;
 
                     newCase = new CaseBuilder().CreateGeneralCase();
 
                     GraphArea_Setup(newCase);
                     Area.GenerateGraph();
+                    Area.SetVerticesDrag(true);
                     Area.SetEdgesDashStyle(EdgeDashStyle.Solid);
 
                     Area.ShowAllEdgesLabels(true);
