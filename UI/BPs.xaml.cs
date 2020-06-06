@@ -1,24 +1,13 @@
 ﻿using EFModels;
-using EFModels.LogsDB;
 using EFModels.MainDB;
-using GraphX.Common.Enums;
-using GraphX.Controls;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using UI.Models;
+using Microsoft.Msagl.Drawing;
+using Color = Microsoft.Msagl.Drawing.Color;
 
 namespace UI
 {
@@ -83,7 +72,7 @@ namespace UI
 
                     break;
             }
-            
+
             Stage = stage;
             dataGrid.SelectedIndex = 0;
         }
@@ -108,80 +97,36 @@ namespace UI
                     //build general case
                     var selectedBP = dataGrid.SelectedItem as BPdto;
                     MainDBContext mainDB = new MainDBContext();
-                    var BPname = mainDB.BPs.FirstOrDefault(s=>s.Name==selectedBP.Название).Name;
+                    var BPname = mainDB.BPs.FirstOrDefault(s => s.Name == selectedBP.Название).Name;
 
                     newCase = new CaseBuilder().CreateGeneralCase();
 
-                    GraphArea_Setup(newCase);
-                    Area.GenerateGraph();
-                    Area.SetVerticesDrag(true);
-                    Area.SetEdgesDashStyle(EdgeDashStyle.Solid);
-
-                    Area.ShowAllEdgesLabels(true);
-
-                    zoomctrl.ZoomToFill();
+                    graphControl1.Graph = null;
+                    graphControl1.Graph = Graph_Setup(newCase);
 
                 }
             }
         }
-        private GraphExample Graph_Setup(Case @case)
+        private Graph Graph_Setup(Case @case)
         {
-            var dataGraph = new GraphExample();
+            Graph dataGraph = new Graph();
 
             foreach (var ev in @case.Events)
             {
-                var dataVertex = new DataVertex(ev.Name);
-                dataGraph.AddVertex(dataVertex);
+                var dataVertex = new Node(ev.Name);
+                dataGraph.AddNode(dataVertex);
             }
 
-            var vlist = dataGraph.Vertices.ToList();
             foreach (var ev in @case.Events)
             {
                 foreach (var next in ev.Next)
                 {
-                    var dataEdge = new DataEdge(vlist.FirstOrDefault(s=>s.Text==ev.Name), vlist.FirstOrDefault(s=>s.Text==next.Key.Name), next.Key.Count) { Text = next.Key.Count.ToString() };
-                    dataGraph.AddEdge(dataEdge);
+                    Edge edge = dataGraph.AddEdge(ev.Name, next.Key.Count.ToString(), next.Key.Name);
+                    edge.Attr.Separation = 1;
                 }
             }
-
             return dataGraph;
         }
-
-        private void GraphArea_Setup(Case @case)
-        {
-            var logicCore = new GXLogicCoreExample() { Graph = Graph_Setup(@case) };
-            logicCore.DefaultLayoutAlgorithm = LayoutAlgorithmTypeEnum.EfficientSugiyama;
-            logicCore.DefaultLayoutAlgorithmParams = logicCore.AlgorithmFactory.CreateLayoutParameters(LayoutAlgorithmTypeEnum.EfficientSugiyama);
-            
-
-            logicCore.DefaultOverlapRemovalAlgorithm = OverlapRemovalAlgorithmTypeEnum.FSA;
-
-            logicCore.DefaultOverlapRemovalAlgorithmParams.HorizontalGap = 100;
-            logicCore.DefaultOverlapRemovalAlgorithmParams.VerticalGap = 100;
-
-
-            logicCore.DefaultEdgeRoutingAlgorithm = EdgeRoutingAlgorithmTypeEnum.Bundling;
-
-            logicCore.AsyncAlgorithmCompute = true;
-
-            Area.LogicCore = logicCore;
-
-            foreach (var v in logicCore.Graph.Vertices)
-            {
-                VertexControl vertexControl = new VertexControl(v);
-                vertexControl.BorderBrush = Brushes.Red;
-                vertexControl.FontSize = 10000;
-                //v.Value = vertexControl;
-                Area.AddVertex(v, vertexControl);
-            }
-
-            for (int i=0; i<Area.VertexList.Count; i++)
-            {
-                Area.VertexList.ElementAt(i).Value.Foreground = Brushes.Red;
-                Area.VertexList.ElementAt(i).Value.Height = 100;
-            }
-        }
-
     }
 
     public class BPdto
