@@ -6,8 +6,9 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Microsoft.Msagl.Drawing;
 using Color = Microsoft.Msagl.Drawing.Color;
+using Microsoft.Msagl.Layout.MDS;
+using Microsoft.Msagl.Drawing;
 
 namespace UI
 {
@@ -90,7 +91,10 @@ namespace UI
                     if (CaseId == -1)
                         newCase = new CaseBuilder().CreateGeneralCase();
                     else
+                    {
                         newCase = new CaseBuilder().CreateCase(CaseId);
+                        SelectCase(newCase);
+                    }
                 }
                 else
                 {
@@ -125,7 +129,33 @@ namespace UI
                     edge.Attr.Separation = 1;
                 }
             }
+            dataGraph.Attr.LayerDirection = LayerDirection.TB;
             return dataGraph;
+        }
+
+        private void SelectCase(Case @case)
+        {
+            ClearSelectedCase();
+            for (int i=0;i<@case.Events.Count-1;i++)
+            {
+                var node = graphControl1.Graph.FindNode(@case.Events[i].Name);
+                node.Attr.Color = Color.Red;
+
+                var edge = node.OutEdges.FirstOrDefault(s => s.TargetNode.LabelText == @case.Events[i + 1].Name);
+                edge.Attr.Color = Color.Red;
+            }
+        }
+
+        private void ClearSelectedCase()
+        {
+            foreach (var n in graphControl1.Graph.Nodes)
+            {
+                n.Attr.Color = Color.Black;
+            }
+            foreach (var e in graphControl1.Graph.Edges)
+            {
+                e.Attr.Color = Color.Black;
+            }
         }
     }
 
