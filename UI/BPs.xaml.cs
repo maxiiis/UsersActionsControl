@@ -7,6 +7,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -130,7 +131,6 @@ namespace UI
             foreach (var ev in @case.Events)
             {
                 var dataVertex = new DataVertex(ev.Name);
-
                 dataGraph.AddVertex(dataVertex);
             }
 
@@ -165,6 +165,21 @@ namespace UI
             logicCore.AsyncAlgorithmCompute = true;
 
             Area.LogicCore = logicCore;
+
+            foreach (var v in logicCore.Graph.Vertices)
+            {
+                VertexControl vertexControl = new VertexControl(v);
+                vertexControl.BorderBrush = Brushes.Red;
+                vertexControl.FontSize = 10000;
+                //v.Value = vertexControl;
+                Area.AddVertex(v, vertexControl);
+            }
+
+            for (int i=0; i<Area.VertexList.Count; i++)
+            {
+                Area.VertexList.ElementAt(i).Value.Foreground = Brushes.Red;
+                Area.VertexList.ElementAt(i).Value.Height = 100;
+            }
         }
 
     }

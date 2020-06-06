@@ -31,7 +31,7 @@
             <Separator />
             <Button x:Name="forward" Content="Дальше" Click="forward_Click"/>
             <Separator />
-            <Button x:Name="openCases" Content="Открыть кейсы" Click="openCases_Click"/>
+            <Button x:Name="openCases" Content="Открыть случаи" Click="openCases_Click"/>
         </ToolBar>
 
 

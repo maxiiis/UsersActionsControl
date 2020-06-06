@@ -8,13 +8,21 @@
         Title="Главное меню" Height="277" Width="495">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
-        <Button Content="Systems" HorizontalAlignment="Left" Margin="27,27,0,0" VerticalAlignment="Top" Height="87" Width="124"/>
-        <Button Content="BP" HorizontalAlignment="Left" Margin="344,27,0,0" VerticalAlignment="Top" Height="87" Width="124" Click="BP_Click"/>
-        <Button Content="Logs" HorizontalAlignment="Center" VerticalAlignment="Top" Height="87" Width="124" Margin="0,27,0,0"/>
-        <Button Content="Events" HorizontalAlignment="Left" Margin="27,152,0,0" VerticalAlignment="Top" Height="87" Width="124"/>
-        <Button Content="Users" HorizontalAlignment="Left" Margin="183,152,0,0" VerticalAlignment="Top" Height="87" Width="124"/>
-        <Button Content="Parametres" HorizontalAlignment="Left" Margin="344,152,0,0" VerticalAlignment="Top" Height="87" Width="124"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="2*"/>
+        </Grid.RowDefinitions>
+        
+        <Button Content="Systems" HorizontalAlignment="Center" VerticalAlignment="Center" Height="87" Width="124" Grid.Row="0" Grid.Column="0"/>
+        <Button Content="BP" HorizontalAlignment="Center" VerticalAlignment="Center" Height="87" Width="124" Click="BP_Click" Grid.Row="0" Grid.Column="1"/>
+        <Button Content="Logs" HorizontalAlignment="Center" VerticalAlignment="Center" Height="87" Width="124" Grid.Row="0" Grid.Column="2"/>
+        <Button Content="Events" HorizontalAlignment="Center" VerticalAlignment="Center" Height="87" Width="124" Grid.Row="1" Grid.Column="0"/>
+        <Button Content="Users" HorizontalAlignment="Center" VerticalAlignment="Center" Height="87" Width="124" Grid.Row="1" Grid.Column="1"/>
+        <Button Content="Parametres" HorizontalAlignment="Center" VerticalAlignment="Center" Height="87" Width="124" Grid.Row="1" Grid.Column="2"/>
+        
     </Grid>
 </Window>
