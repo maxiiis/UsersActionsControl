@@ -17,7 +17,7 @@
             <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
         
-        <Button Content="Systems" HorizontalAlignment="Center" VerticalAlignment="Center" Height="87" Width="124" Grid.Row="0" Grid.Column="0"/>
+        <Button Content="Systems" HorizontalAlignment="Center" VerticalAlignment="Center" Height="87" Width="124" Grid.Row="0" Grid.Column="0" Click="Button_Click"/>
         <Button Content="BP" HorizontalAlignment="Center" VerticalAlignment="Center" Height="87" Width="124" Click="BP_Click" Grid.Row="0" Grid.Column="1"/>
         <Button Content="Logs" HorizontalAlignment="Center" VerticalAlignment="Center" Height="87" Width="124" Grid.Row="0" Grid.Column="2"/>
         <Button Content="Events" HorizontalAlignment="Center" VerticalAlignment="Center" Height="87" Width="124" Grid.Row="1" Grid.Column="0"/>

@@ -14,7 +14,16 @@ namespace UI
 
         private void BP_Click(object sender, RoutedEventArgs e)
         {
-            new BPs().Show();
+            Hide();
+            new BPs().ShowDialog();
+            Show();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Hide();
+            new Systems().ShowDialog();
+            Show();
         }
     }
 }
