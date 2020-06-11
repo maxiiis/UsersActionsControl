@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EFModels.MainDB
 {
@@ -13,7 +14,8 @@ namespace EFModels.MainDB
         public string Name { get; set; }
         //для динамической генерации
         public string Structure { get; set; }
-
+        [Column(TypeName = "json")]
+        public StandartCase StandartCase { get; set; }
         public System System { get; set; }
         public List<BPCase> BPCases { get; set; }
     }

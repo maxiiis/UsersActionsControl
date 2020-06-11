@@ -19,6 +19,7 @@ namespace UI
     public partial class BPs : Window
     {
         private int Stage = 0;
+        private long BPId;
 
         public BPs()
         {
@@ -43,11 +44,6 @@ namespace UI
             }
         }
 
-        private void forward_Click(object sender, RoutedEventArgs e)
-        {
-            //openCases?
-        }
-
         private void ChangeStage(int stage)
         {
             MainDBContext mainDB = new MainDBContext();
@@ -63,6 +59,7 @@ namespace UI
                             Название = b.Name
                         }).ToList();
                     dataGrid.ItemsSource = BPs;
+                    openCases.Visibility = Visibility.Visible;
                     break;
                 case 1:
                     BPdto selectedRow = dataGrid.SelectedItem as BPdto;
@@ -71,6 +68,8 @@ namespace UI
                     var Cases = mainDB.BPCases.Where(b => b.BPId == BPId).ToList();
                     dataGrid.ItemsSource = Cases;
                     dataGrid.Columns.Last().Visibility = Visibility.Collapsed;
+
+                    openCases.Visibility = Visibility.Collapsed;
 
                     break;
             }
@@ -101,6 +100,9 @@ namespace UI
                 {
                     //build general case
                     var selectedBP = dataGrid.SelectedItem as BPdto;
+
+                    BPId = selectedBP.Номер;
+
                     MainDBContext mainDB = new MainDBContext();
                     var BPname = mainDB.BPs.FirstOrDefault(s => s.Name == selectedBP.Название).Name;
 
@@ -150,6 +152,28 @@ namespace UI
             return dataGraph;
         }
 
+        private Graph Graph_Setup(StandartCase @case)
+        {
+            Graph dataGraph = new Graph();
+
+            for (int i = 0; i < @case.Events.Count; i++)
+            {
+                for (int j = 0; j < @case.Events.Count; j++)
+                {
+                    if (@case.Events[i].Edges[j].Trans)
+                    {
+                        Edge edge = dataGraph.AddEdge(@case.Events[i].Name, @case.Events[j].Name);
+                        edge.Attr.Separation = 1;
+                    }
+                }
+            }
+
+            dataGraph.Attr.LayerDirection = LayerDirection.TB;
+            dataGraph.LayoutAlgorithmSettings = new SugiyamaLayoutSettings();
+            dataGraph.LayoutAlgorithmSettings.EdgeRoutingSettings.EdgeRoutingMode = Microsoft.Msagl.Core.Routing.EdgeRoutingMode.SugiyamaSplines;
+            return dataGraph;
+        }
+
         private void SelectCase(Case @case)
         {
             ClearSelectedCase();
@@ -179,11 +203,39 @@ namespace UI
             }
         }
 
-        public class BPdto
+        private void viewStandart_Click(object sender, RoutedEventArgs e)
         {
-            public long Номер { get; set; }
-            public string Система { get; set; }
-            public string Название { get; set; }
+            if (viewStandart.IsChecked == true)
+            {
+                StandartCase newCase;
+
+                newCase = new CaseBuilder().CreateStandartCase(BPId);
+
+                graphControl1.Graph = null;
+                graphControl1.Graph = Graph_Setup(newCase);
+            }
+            else
+            {
+                Case newCase;
+                newCase = new CaseBuilder().CreateGeneralCase();
+                graphControl1.Graph = null;
+                graphControl1.Graph = Graph_Setup(newCase);
+            }
+        }
+
+        private void viewOngeneral_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
+
+    public class BPdto
+    {
+        public long Номер { get; set; }
+        public string Система { get; set; }
+        public string Название { get; set; }
+    }
+
+
 }
+

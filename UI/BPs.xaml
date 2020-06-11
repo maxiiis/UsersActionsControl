@@ -26,12 +26,15 @@
 
         <wpfgraphcontrol:AutomaticGraphLayoutControl x:Name="graphControl1" Grid.Column="1" Grid.Row="1"/>
 
+        
+        
         <ToolBar Height="25" VerticalAlignment="Top" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
             <Button x:Name="back" Content="Назад" Click="back_Click" />
             <Separator />
-            <Button x:Name="forward" Content="Дальше" Click="forward_Click"/>
-            <Separator />
             <Button x:Name="openCases" Content="Открыть случаи" Click="openCases_Click"/>
+            <Separator/>
+            <CheckBox x:Name="viewStandart" Content="Показать эталонную модель" Click="viewStandart_Click"></CheckBox>
+            <CheckBox x:Name="viewOngeneral" Content="Отображать отдельно" Visibility="Hidden" Click="viewOngeneral_Click"></CheckBox>
         </ToolBar>
 
 

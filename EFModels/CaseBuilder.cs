@@ -1,4 +1,5 @@
 ﻿using EFModels.LogsDB;
+using EFModels.MainDB;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -25,6 +26,7 @@ namespace EFModels
 
         public Case CreateGeneralCase(string BpName="")
         {
+            //create only 1 BP
             LogDBContext logDB = new LogDBContext();
             var s = logDB.EventLogs.OrderBy(s => s.CaseId).ThenBy(s => s.TimeStamp).ToList();
 
@@ -51,6 +53,21 @@ namespace EFModels
                 }
             }
             return general;
+        }
+
+
+        public StandartCase CreateStandartCase(long BPId)
+        {
+            MainDBContext mainDB = new MainDBContext();
+
+            BP bP = mainDB.BPs.FirstOrDefault(s => s.Id == BPId);
+
+            if (bP == null)
+                return null;
+
+            StandartCase standart = bP.StandartCase;
+
+            return standart;
         }
     }
 }
