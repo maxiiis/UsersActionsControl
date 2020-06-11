@@ -1,14 +1,15 @@
 ﻿using EFModels;
 using EFModels.MainDB;
+using Microsoft.Msagl.Core.Layout;
+using Microsoft.Msagl.Drawing;
+using Microsoft.Msagl.Layout.Layered;
 using System;
 using System.Data;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
-using Color = Microsoft.Msagl.Drawing.Color;
-using Microsoft.Msagl.Layout.MDS;
-using Microsoft.Msagl.Drawing;
+using Node = Microsoft.Msagl.Drawing.Node;
+using Edge = Microsoft.Msagl.Drawing.Edge;
 
 namespace UI
 {
@@ -117,32 +118,50 @@ namespace UI
 
             foreach (var ev in @case.Events)
             {
-                var dataVertex = new Node(ev.Name);
-                dataGraph.AddNode(dataVertex);
-            }
-
-            foreach (var ev in @case.Events)
-            {
                 foreach (var next in ev.Next)
                 {
                     Edge edge = dataGraph.AddEdge(ev.Name, next.Key.Count.ToString(), next.Key.Name);
                     edge.Attr.Separation = 1;
                 }
             }
+
+            //dataGraph.CreateGeometryGraph();
+
+            //var geomGraph = dataGraph.GeometryGraph;
+
+            //var geomGraphComponents = GraphConnectedComponents.CreateComponents(geomGraph.Nodes, geomGraph.Edges);
+            //var settings = new SugiyamaLayoutSettings();
+            ////foreach (var subgraph in geomGraphComponents)
+            ////{
+
+            ////    var layout = new LayeredLayout(subgraph, settings);
+            ////    subgraph.Margins = settings.NodeSeparation / 2;
+            ////    layout.Run();
+
+            ////}
+
+            //Microsoft.Msagl.Layout.MDS.MdsGraphLayout.PackGraphs(geomGraphComponents, settings);
+
+            //geomGraph.UpdateBoundingBox();
+
             dataGraph.Attr.LayerDirection = LayerDirection.TB;
+            dataGraph.LayoutAlgorithmSettings = new SugiyamaLayoutSettings();
+            dataGraph.LayoutAlgorithmSettings.EdgeRoutingSettings.EdgeRoutingMode = Microsoft.Msagl.Core.Routing.EdgeRoutingMode.SugiyamaSplines;
             return dataGraph;
         }
 
         private void SelectCase(Case @case)
         {
             ClearSelectedCase();
-            for (int i=0;i<@case.Events.Count-1;i++)
+            for (int i = 0; i < @case.Events.Count - 1; i++)
             {
                 var node = graphControl1.Graph.FindNode(@case.Events[i].Name);
                 node.Attr.Color = Color.Red;
+                node.Attr.Color = new Color(byte.MaxValue, node.Attr.Color.R, node.Attr.Color.G, node.Attr.Color.B);
 
                 var edge = node.OutEdges.FirstOrDefault(s => s.TargetNode.LabelText == @case.Events[i + 1].Name);
-                edge.Attr.Color = Color.Red;
+                edge.Attr.Color = node.Attr.Color;
+                edge.TargetNode.Attr.Color = node.Attr.Color;
             }
         }
 
@@ -151,18 +170,20 @@ namespace UI
             foreach (var n in graphControl1.Graph.Nodes)
             {
                 n.Attr.Color = Color.Black;
+                n.Attr.Color = new Color(byte.MaxValue / 2, n.Attr.Color.R, n.Attr.Color.G, n.Attr.Color.B);
             }
             foreach (var e in graphControl1.Graph.Edges)
             {
                 e.Attr.Color = Color.Black;
+                e.Attr.Color = new Color(byte.MaxValue / 2, e.Attr.Color.R, e.Attr.Color.G, e.Attr.Color.B);
             }
         }
-    }
 
-    public class BPdto
-    {
-        public long Номер { get; set; }
-        public string Система { get; set; }
-        public string Название { get; set; }
+        public class BPdto
+        {
+            public long Номер { get; set; }
+            public string Система { get; set; }
+            public string Название { get; set; }
+        }
     }
 }

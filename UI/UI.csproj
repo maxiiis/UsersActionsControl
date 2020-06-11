@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutomaticGraphLayout.Drawing" Version="1.1.7" />
     <PackageReference Include="AutomaticGraphLayout.WpfGraphControl" Version="1.1.7" />
-    <PackageReference Include="Microsoft.Msagl" Version="1.1.3" />
   </ItemGroup>
 
   <ItemGroup>
