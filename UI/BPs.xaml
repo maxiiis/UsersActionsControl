@@ -15,22 +15,23 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="25"/>
+            <RowDefinition Height="25"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         
         <DataGrid x:Name="dataGrid" AutoGenerateColumns="True" Width="300" HorizontalAlignment="Left"
-                  SelectionChanged="dataGrid_SelectionChanged" Grid.Column="0" Grid.Row="1"
+                  SelectionChanged="dataGrid_SelectionChanged" Grid.Column="0" Grid.Row="1" Grid.RowSpan="2"
                   CanUserAddRows="False"
                   CanUserDeleteRows="False"
                   SelectionMode="Single"/>
 
-        <wpfgraphcontrol:AutomaticGraphLayoutControl x:Name="graphControl1" Grid.Column="1" Grid.Row="1"/>
+        <wpfgraphcontrol:AutomaticGraphLayoutControl x:Name="graphControl1" Grid.Column="1" Grid.Row="2"/>
 
-        
-        
+        <Label x:Name="BPLabel" Grid.Column="1" Grid.Row="1" HorizontalContentAlignment="Center"/>
+
         <ToolBar Height="25" VerticalAlignment="Top" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
             <Button x:Name="back" Content="Назад" Click="back_Click" />
-            <Separator />
+            <Separator x:Name="openCasesSeparator" />
             <Button x:Name="openCases" Content="Открыть случаи" Click="openCases_Click"/>
             <Separator/>
             <CheckBox x:Name="viewStandart" Content="Показать эталонную модель" Click="viewStandart_Click"></CheckBox>

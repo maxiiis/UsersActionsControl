@@ -20,6 +20,8 @@ namespace UI
     {
         private int Stage = 0;
         private long BPId;
+        private bool IsStandart;
+        private string BPName;
 
         public BPs()
         {
@@ -42,6 +44,8 @@ namespace UI
             {
                 ChangeStage(0);
             }
+            else
+                Close();
         }
 
         private void ChangeStage(int stage)
@@ -60,6 +64,7 @@ namespace UI
                         }).ToList();
                     dataGrid.ItemsSource = BPs;
                     openCases.Visibility = Visibility.Visible;
+                    openCasesSeparator.Visibility = Visibility.Visible;
                     break;
                 case 1:
                     BPdto selectedRow = dataGrid.SelectedItem as BPdto;
@@ -70,6 +75,7 @@ namespace UI
                     dataGrid.Columns.Last().Visibility = Visibility.Collapsed;
 
                     openCases.Visibility = Visibility.Collapsed;
+                    openCasesSeparator.Visibility = Visibility.Collapsed;
 
                     break;
             }
@@ -89,7 +95,22 @@ namespace UI
                     BPCase selectedRow = dataGrid.SelectedItem as BPCase;
                     var CaseId = selectedRow.CaseId;
                     if (CaseId == -1)
-                        newCase = new CaseBuilder().CreateGeneralCase();
+                    {
+                        if (IsStandart)
+                        {
+                            var @case = new CaseBuilder().CreateStandartCase(BPId);
+
+                            graphControl1.Graph = null;
+                            graphControl1.Graph = Graph_Setup(@case);
+                        }
+                        else
+                        {
+                            newCase = new CaseBuilder().CreateGeneralCase();
+                            graphControl1.Graph = null;
+                            graphControl1.Graph = Graph_Setup(newCase);
+                        }
+
+                    }
                     else
                     {
                         newCase = new CaseBuilder().CreateCase(CaseId);
@@ -105,6 +126,9 @@ namespace UI
 
                     MainDBContext mainDB = new MainDBContext();
                     var BPname = mainDB.BPs.FirstOrDefault(s => s.Name == selectedBP.Название).Name;
+                    BPName = BPname;
+
+                    BPLabel.Content = $"Модель бизнес-процесса: {BPname}";
 
                     newCase = new CaseBuilder().CreateGeneralCase();
 
@@ -177,35 +201,53 @@ namespace UI
         private void SelectCase(Case @case)
         {
             ClearSelectedCase();
+
             for (int i = 0; i < @case.Events.Count - 1; i++)
             {
                 var node = graphControl1.Graph.FindNode(@case.Events[i].Name);
-                node.Attr.Color = Color.Red;
-                node.Attr.Color = new Color(byte.MaxValue, node.Attr.Color.R, node.Attr.Color.G, node.Attr.Color.B);
 
                 var edge = node.OutEdges.FirstOrDefault(s => s.TargetNode.LabelText == @case.Events[i + 1].Name);
-                edge.Attr.Color = node.Attr.Color;
+
+                if (edge == null)
+                {
+                    edge = graphControl1.Graph.AddEdge(node.LabelText, @case.Events[i + 1].Name);
+                    node.AddOutEdge(edge);
+                    edge.Attr.Color = Color.Red;
+                }
+
+                if (!IsStandart)
+                {
+                    node.Attr.Color = Color.Red;
+                    //node.Attr.Color = new Color(byte.MaxValue, node.Attr.Color.R, node.Attr.Color.G, node.Attr.Color.B);
+                    edge.Attr.Color = node.Attr.Color;
+                }
+                else
+                {
+                    node.Attr.Color = Color.Black;
+                    //node.Attr.Color = new Color(byte.MaxValue, node.Attr.Color.R, node.Attr.Color.G, node.Attr.Color.B);
+                    
+                    //edge.Attr.Color = node.Attr.Color;
+                    
+                }
+                node.Attr.LineWidth = 3;
                 edge.TargetNode.Attr.Color = node.Attr.Color;
+                edge.TargetNode.Attr.LineWidth = 3;
+                edge.Attr.LineWidth = 1.8;
+
+
+            }
+
+            if (IsStandart)
+            {
+                Graph g = graphControl1.Graph;
+                graphControl1.Graph = null;
+                graphControl1.Graph = g;
             }
         }
 
         private void ClearSelectedCase()
         {
-            foreach (var n in graphControl1.Graph.Nodes)
-            {
-                n.Attr.Color = Color.Black;
-                n.Attr.Color = new Color(byte.MaxValue / 2, n.Attr.Color.R, n.Attr.Color.G, n.Attr.Color.B);
-            }
-            foreach (var e in graphControl1.Graph.Edges)
-            {
-                e.Attr.Color = Color.Black;
-                e.Attr.Color = new Color(byte.MaxValue / 2, e.Attr.Color.R, e.Attr.Color.G, e.Attr.Color.B);
-            }
-        }
-
-        private void viewStandart_Click(object sender, RoutedEventArgs e)
-        {
-            if (viewStandart.IsChecked == true)
+            if (IsStandart)
             {
                 StandartCase newCase;
 
@@ -214,12 +256,44 @@ namespace UI
                 graphControl1.Graph = null;
                 graphControl1.Graph = Graph_Setup(newCase);
             }
+
+            foreach (var n in graphControl1.Graph.Nodes)
+            {
+                n.Attr.Color = Color.Black;
+                n.Attr.LineWidth = 1;
+                //n.Attr.Color = new Color(byte.MaxValue / 2, n.Attr.Color.R, n.Attr.Color.G, n.Attr.Color.B);
+            }
+            foreach (var e in graphControl1.Graph.Edges)
+            {
+                e.Attr.Color = Color.Black;
+                e.TargetNode.Attr.LineWidth = 1;
+                e.Attr.LineWidth = 1;
+                //e.Attr.Color = new Color(byte.MaxValue / 2, e.Attr.Color.R, e.Attr.Color.G, e.Attr.Color.B);
+            }
+        }
+
+        private void viewStandart_Click(object sender, RoutedEventArgs e)
+        {
+            if (viewStandart.IsChecked == true)
+            {
+                IsStandart = true;
+                StandartCase newCase;
+
+                newCase = new CaseBuilder().CreateStandartCase(BPId);
+
+                graphControl1.Graph = null;
+                graphControl1.Graph = Graph_Setup(newCase);
+
+                BPLabel.Content = $"Эталонная модель бизнес-процесса: {BPName}";
+            }
             else
             {
+                IsStandart = false;
                 Case newCase;
                 newCase = new CaseBuilder().CreateGeneralCase();
                 graphControl1.Graph = null;
                 graphControl1.Graph = Graph_Setup(newCase);
+                BPLabel.Content = $"Модель бизнес-процесса: {BPName}";
             }
         }
 
