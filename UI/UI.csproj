@@ -7,12 +7,30 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\BP.png" />
+    <None Remove="Images\event.png" />
+    <None Remove="Images\log.png" />
+    <None Remove="Images\settings.png" />
+    <None Remove="Images\system.png" />
+    <None Remove="Images\user.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutomaticGraphLayout.Drawing" Version="1.1.7" />
     <PackageReference Include="AutomaticGraphLayout.WpfGraphControl" Version="1.1.7" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\EFModels\EFModels.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\BP.png" />
+    <Resource Include="Images\event.png" />
+    <Resource Include="Images\log.png" />
+    <Resource Include="Images\settings.png" />
+    <Resource Include="Images\system.png" />
+    <Resource Include="Images\user.png" />
   </ItemGroup>
 
 </Project>

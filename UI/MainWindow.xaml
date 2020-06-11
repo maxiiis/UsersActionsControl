@@ -35,12 +35,42 @@
         </Grid.RowDefinitions>
 
 
-        <Button Content="Системы" Grid.Column="1" Click="Button_Click" Style="{StaticResource button}" />
-        <Button Content="Бизнес-процессы" Click="BP_Click" Grid.Column="2" Style="{StaticResource button}"/>
-        <Button Content="Логи" Grid.Column="3" Style="{StaticResource button}"/>
-        <Button Content="События" Grid.Row="1" Grid.Column="1" Style="{StaticResource button}"/>
-        <Button Content="Пользователи" Grid.Row="1" Grid.Column="2" Style="{StaticResource button}"/>
-        <Button Content="Настройки" Grid.Row="1" Grid.Column="3" Style="{StaticResource button}"/>
+        <Button Grid.Column="1" Click="Button_Click" Style="{StaticResource button}" >
+            <StackPanel Width="124" Height="87">
+                <TextBlock Text="Системы" TextAlignment="Center" Margin="30"/>
+                <Image Source="Images/system.png" Height="28" Width="36" HorizontalAlignment="Right" Margin="0,-25,10,0"/>
+            </StackPanel>
+        </Button>
+        <Button Click="BP_Click" Grid.Column="2" Style="{StaticResource button}">
+            <StackPanel Width="124" Height="87">
+                <TextBlock Text="Бизнес-процессы" TextAlignment="Center" Margin="0,30,0,30"/>
+                <Image Source="Images/BP.png" Height="33" Width="38" HorizontalAlignment="Right" Margin="0,-27,10,0"/>
+            </StackPanel>
+        </Button>
+        <Button Grid.Column="3" Style="{StaticResource button}">
+            <StackPanel Width="124" Height="87">
+                <TextBlock Text="Логи" TextAlignment="Center" Margin="0,30,0,30"/>
+                <Image Source="Images/log.png" Height="27" Width="38" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,-25,10,0"/>
+            </StackPanel>
+        </Button>
+        <Button Grid.Row="1" Grid.Column="1" Style="{StaticResource button}">
+            <StackPanel Width="124" Height="87">
+                <TextBlock Text="События" TextAlignment="Center" Margin="0,30,0,30"/>
+                <Image Source="Images/event.png" Height="27" Width="38" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,-25,10,0"/>
+            </StackPanel>
+        </Button>
+        <Button Grid.Row="1" Grid.Column="2" Style="{StaticResource button}">
+            <StackPanel Width="124" Height="87">
+                <TextBlock Text="Пользователи" TextAlignment="Center" Margin="0,30,0,30"/>
+                <Image Source="Images/user.png" Height="27" Width="38" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,-25,10,0"/>
+            </StackPanel>
+        </Button>
+        <Button Grid.Row="1" Grid.Column="3" Style="{StaticResource button}">
+            <StackPanel Width="124" Height="87">
+                <TextBlock Text="Настройки" TextAlignment="Center" Margin="0,30,0,30"/>
+                <Image Source="Images/settings.png" Height="27" Width="38" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,-25,10,0"/>
+            </StackPanel>
+        </Button>
 
     </Grid>
 </Window>
