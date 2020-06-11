@@ -54,7 +54,6 @@ namespace UI
             switch (stage)
             {
                 case 0:
-
                     var BPs = mainDB.BPs.Select(
                         b => new BPdto
                         {
@@ -72,8 +71,10 @@ namespace UI
 
                     var Cases = mainDB.BPCases.Where(b => b.BPId == BPId).ToList();
                     dataGrid.ItemsSource = Cases;
-                    dataGrid.Columns.Last().Visibility = Visibility.Collapsed;
-
+                    
+                    dataGrid.Columns[1].Visibility = Visibility.Collapsed;
+                    dataGrid.Columns[2].Visibility = Visibility.Collapsed;
+                    //TODO: добавить время начала и конца
                     openCases.Visibility = Visibility.Collapsed;
                     openCasesSeparator.Visibility = Visibility.Collapsed;
 
@@ -300,6 +301,11 @@ namespace UI
         private void viewOngeneral_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void dataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        {
+            e.Column.Width = new DataGridLength(1, DataGridLengthUnitType.Star);
         }
     }
 
