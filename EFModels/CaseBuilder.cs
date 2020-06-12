@@ -1,5 +1,6 @@
 ﻿using EFModels.LogsDB;
 using EFModels.MainDB;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,24 +12,23 @@ namespace EFModels
         {
             LogDBContext logDB = new LogDBContext();
 
-            var Events = logDB.EventLogs.Where(b => b.CaseId == CaseId).OrderBy(b => b.TimeStamp).ToList();
+            var Events = logDB.EventLogs.Include(s => s.Resourse).Include(s => s.Activity).Where(b => b.CaseId == CaseId).OrderBy(b => b.TimeStamp).ToList();
 
             Case newCase = new Case(CaseId);
 
             foreach (var e in Events)
             {
-                
                 newCase.Add(new Event(e.Activity.ActivityText2) { TimeStamp = e.TimeStamp });
             }
 
             return newCase;
         }
 
-        public Case CreateGeneralCase(string BpName="")
+        public Case CreateGeneralCase(string BpName = "")
         {
             //create only 1 BP
             LogDBContext logDB = new LogDBContext();
-            var s = logDB.EventLogs.OrderBy(s => s.CaseId).ThenBy(s => s.TimeStamp).ToList();
+            var s = logDB.EventLogs.Include(s => s.Activity).Include(s => s.Resourse).OrderBy(s => s.CaseId).ThenBy(s => s.TimeStamp).ToList();
 
             var groups = s.GroupBy(s => s.CaseId);
 
@@ -68,6 +68,27 @@ namespace EFModels
             StandartCase standart = bP.StandartCase;
 
             return standart;
+        }
+
+        public void UpdateCases()
+        {
+            LogDBContext logDB = new LogDBContext();
+            var s = logDB.EventLogs.Include(s => s.Activity).Include(s => s.Resourse).OrderBy(s => s.CaseId).ThenBy(s => s.TimeStamp).ToList();
+
+            var groups = s.GroupBy(s => s.CaseId);
+
+            MainDBContext mainDBContext = new MainDBContext();
+            mainDBContext.BPCases.Load();
+
+            foreach (var g in groups)
+            {
+                if (mainDBContext.BPCases.FirstOrDefault(s => s.CaseId == g.Key) == null)
+                {
+                    //пока только для 1 BP
+                    mainDBContext.BPCases.Local.Add(new BPCase { BPId = 1, CaseId = g.Key });
+                }
+            }
+            mainDBContext.SaveChanges();
         }
     }
 }
