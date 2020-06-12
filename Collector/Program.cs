@@ -6,7 +6,7 @@ namespace Collector
     {
         static void Main(string[] args)
         {
-
+            new SAPExtractor("", "").ExtractData();
         }
     }
 }

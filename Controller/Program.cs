@@ -43,7 +43,7 @@ namespace Controller
 
                 foreach (var e in g)
                 {
-                    bP.Add(new Event(e.Activity) { TimeStamp = e.TimeStamp });
+                    bP.Add(new Event(e.ActivityId) { TimeStamp = e.TimeStamp });
                     etalon.UpdateHierarchy(bP.Events.Last());
                 }
             }

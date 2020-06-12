@@ -18,7 +18,7 @@ namespace EFModels
             foreach (var e in Events)
             {
                 
-                newCase.Add(new Event(e.EventLogData.ActivityText2) { TimeStamp = e.TimeStamp });
+                newCase.Add(new Event(e.Activity.ActivityText2) { TimeStamp = e.TimeStamp });
             }
 
             return newCase;
@@ -48,7 +48,7 @@ namespace EFModels
 
                 foreach (var e in g)
                 {
-                    bP.Add(new Event(e.EventLogData.ActivityText2) { TimeStamp = e.TimeStamp });
+                    bP.Add(new Event(e.Activity.ActivityText2) { TimeStamp = e.TimeStamp });
                     general.UpdateHierarchy(bP.Events.Last());
                 }
             }

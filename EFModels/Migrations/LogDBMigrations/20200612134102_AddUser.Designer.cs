@@ -3,40 +3,23 @@ using System;
 using EFModels.LogsDB;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace EFModels.Migrations.LogDBMigrations
 {
     [DbContext(typeof(LogDBContext))]
-    partial class LogDBContextModelSnapshot : ModelSnapshot
+    [Migration("20200612134102_AddUser")]
+    partial class AddUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
                 .HasAnnotation("ProductVersion", "3.1.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
-
-            modelBuilder.Entity("EFModels.LogsDB.Activity", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ActivityText")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ActivityText2")
-                        .HasColumnType("text");
-
-                    b.Property<string>("StatusText")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Activities");
-                });
 
             modelBuilder.Entity("EFModels.LogsDB.EventLog", b =>
                 {
@@ -45,7 +28,7 @@ namespace EFModels.Migrations.LogDBMigrations
                         .HasColumnType("bigint")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<string>("ActivityId")
+                    b.Property<string>("Activity")
                         .HasColumnType("text");
 
                     b.Property<bool>("AnalysStatus")
@@ -57,6 +40,9 @@ namespace EFModels.Migrations.LogDBMigrations
                     b.Property<int>("Cost")
                         .HasColumnType("integer");
 
+                    b.Property<string>("EventLogDataActivity")
+                        .HasColumnType("text");
+
                     b.Property<string>("ResourseId")
                         .HasColumnType("text");
 
@@ -65,11 +51,30 @@ namespace EFModels.Migrations.LogDBMigrations
 
                     b.HasKey("EventId");
 
-                    b.HasIndex("ActivityId");
+                    b.HasIndex("EventLogDataActivity");
 
                     b.HasIndex("ResourseId");
 
                     b.ToTable("EventLogs");
+                });
+
+            modelBuilder.Entity("EFModels.LogsDB.EventLogData", b =>
+                {
+                    b.Property<string>("Activity")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ActivityText")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ActivityText2")
+                        .HasColumnType("text");
+
+                    b.Property<string>("StatusText")
+                        .HasColumnType("text");
+
+                    b.HasKey("Activity");
+
+                    b.ToTable("EventLogDatas");
                 });
 
             modelBuilder.Entity("EFModels.LogsDB.User", b =>
@@ -99,9 +104,9 @@ namespace EFModels.Migrations.LogDBMigrations
 
             modelBuilder.Entity("EFModels.LogsDB.EventLog", b =>
                 {
-                    b.HasOne("EFModels.LogsDB.Activity", "Activity")
+                    b.HasOne("EFModels.LogsDB.EventLogData", "EventLogData")
                         .WithMany("EventLog")
-                        .HasForeignKey("ActivityId");
+                        .HasForeignKey("EventLogDataActivity");
 
                     b.HasOne("EFModels.LogsDB.User", "Resourse")
                         .WithMany("EventLogs")

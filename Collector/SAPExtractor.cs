@@ -134,7 +134,9 @@ namespace Collector
 
                 EventLog log = new EventLog();
 
-                EventLogData logData = new EventLogData();
+                Activity logData = new Activity();
+
+                User user = new User();
 
                 cellIterator = rowIterator.Current.SelectChildren("Cell", URI);
                 cellIterator.MoveNext();
@@ -149,7 +151,7 @@ namespace Collector
 
                             string colName = columnsName[current];
                             string currentValue = cellIterator.Current.Value;
-                            FillLogField(currentValue, colName, ref log, ref logData);
+                            FillLogField(currentValue, colName, ref log, ref logData, ref user);
 
                             j = current;
                         }
@@ -158,7 +160,7 @@ namespace Collector
                             cellIterator.Current.MoveToParent();
                             string colName = columnsName[j];
                             string currentValue = cellIterator.Current.Value;
-                            FillLogField(currentValue, colName, ref log, ref logData);
+                            FillLogField(currentValue, colName, ref log, ref logData, ref user);
                         }
 
                     }
@@ -166,31 +168,43 @@ namespace Collector
                     {
                         string colName = columnsName[j];
                         string currentValue = cellIterator.Current.Value;
-                        FillLogField(currentValue, colName, ref log, ref logData);
+                        FillLogField(currentValue, colName, ref log, ref logData, ref user);
                     }
                     cellIterator.MoveNext();
                 }
 
-                log.EventLogData = logData;
+                log.Activity = logData;
+                log.Resourse = user;
                 results.Add(log);
             }
 
             return results;
         }
 
-        private void FillLogField(string currentValue, string colName, ref EventLog log, ref EventLogData logData)
+        private void FillLogField(string currentValue, string colName, ref EventLog log, ref Activity logData, ref User user)
         {
             switch (colName)
             {
                 case "CaseId": log.CaseId = Convert.ToInt64(currentValue); break;
                 case "TimeStamp": log.TimeStamp = Convert.ToDateTime(currentValue); break;
-                case "Resourse": log.Resourse = currentValue; break;
-                case "Activity": log.Activity = currentValue; break;
+                case "Resourse":
+                    log.ResourseId = currentValue;
+                    user.Id = currentValue;
+                    break;
+                case "Activity":
+                    log.ActivityId = currentValue;
+                    logData.Id = currentValue;
+                    break;
                 case "ActivityText": logData.ActivityText = currentValue; break;
                 case "ActivityText2": logData.ActivityText2 = currentValue; break;
-                case "ResourseDepartment": logData.ResourseDepartment = currentValue; break;
-                case "ResourseFilial": logData.ResourseFilial = currentValue; break;
-                case "ResourseFIO": logData.ResourseFIO = currentValue; break;
+                case "ResourseDepartment": user.Department = currentValue; break;
+                case "ResourseFilial": user.Filial = currentValue; break;
+                case "ResourseFIO":
+                    user.LastName = currentValue.Split(' ').ToArray()[0];
+                    user.FirstName = currentValue.Split(' ').ToArray()[1];
+                    user.MiddleName = currentValue.Split(' ').ToArray()[2];
+                    break;
+                case "STATUS_TEXT": logData.StatusText = currentValue; break;
             }
         }
 
@@ -201,16 +215,27 @@ namespace Collector
             LogDBContext context = new LogDBContext();
             while (Queue.Count != 0)
             {
-                context.Add(JsonSerializer.Deserialize<EventLog>(Queue.Dequeue()));
+                EventLog eventLog = JsonSerializer.Deserialize<EventLog>(Queue.Dequeue());
+
+                if (context.Users.FirstOrDefault(s => s.Id == eventLog.ResourseId) == null)
+                    context.Users.Add(eventLog.Resourse);
+                if (context.Activities.FirstOrDefault(s => s.Id == eventLog.ActivityId) == null)
+                    context.Activities.Add(eventLog.Activity);
+
+                eventLog.Activity = null;
+                eventLog.Resourse = null;
+                if (context.EventLogs.FirstOrDefault(s => s.CaseId == eventLog.CaseId && s.TimeStamp == eventLog.TimeStamp) == null)
+                    context.EventLogs.Add(eventLog);
+                try
+                {
+                    context.SaveChanges();
+                }
+                catch
+                {
+                    SaveInLocalQueue();
+                }
             }
-            try
-            {
-                context.SaveChanges();
-            }
-            catch
-            {
-                SaveInLocalQueue();
-            }
+
         }
 
         //Сохранение результатов в файлы

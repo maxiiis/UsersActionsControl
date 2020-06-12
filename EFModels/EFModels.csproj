@@ -7,6 +7,12 @@
   <ItemGroup>
     <Compile Remove="Migrations\LogDBMigrations\20200518120449_AddDbSets.cs" />
     <Compile Remove="Migrations\LogDBMigrations\20200518120449_AddDbSets.Designer.cs" />
+    <Compile Remove="Migrations\LogDBMigrations\20200612131719_AddUsers.cs" />
+    <Compile Remove="Migrations\LogDBMigrations\20200612131719_AddUsers.Designer.cs" />
+    <Compile Remove="Migrations\LogDBMigrations\20200612132649_AddUsers.cs" />
+    <Compile Remove="Migrations\LogDBMigrations\20200612132649_AddUsers.Designer.cs" />
+    <Compile Remove="Migrations\LogDBMigrations\20200612133241_AddUsers.cs" />
+    <Compile Remove="Migrations\LogDBMigrations\20200612133241_AddUsers.Designer.cs" />
     <Compile Remove="Migrations\MainDBMigration\20200526161017_NewMainDBStructure.cs" />
     <Compile Remove="Migrations\MainDBMigration\20200526161017_NewMainDBStructure.Designer.cs" />
     <Compile Remove="Migrations\MainDBMigration\20200526161941_NewMainDBStructure.cs" />

@@ -10,7 +10,8 @@ namespace EFModels.LogsDB
         //}
 
         public DbSet<EventLog> EventLogs { get; set; }
-        public DbSet<EventLogData> EventLogDatas { get; set; }
+        public DbSet<Activity> Activities { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
