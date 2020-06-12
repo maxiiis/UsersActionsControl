@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.Tracing;
+using System.Linq;
 using System.Text;
 
 namespace EFModels
@@ -43,9 +44,11 @@ namespace EFModels
             Events[0].Edges[1].Trans = true;
             Events[0].Edges[1].deltaTime = new TimeSpan(30,0,0,0);
             Events[0].Edges[20].Trans = true;
+            Events[0].Edges[20].deltaTime = new TimeSpan(30, 0, 0, 0);
 
             Events[1].Edges[2].Trans = true;
             Events[2].Edges[3].Trans = true;
+            
             Events[3].Edges[4].Trans = true;
             Events[4].Edges[5].Trans = true;
             Events[5].Edges[6].Trans = true;
@@ -63,6 +66,11 @@ namespace EFModels
             Events[17].Edges[19].Trans = true;
             Events[20].Edges[16].Trans = true;
 
+        }
+
+        public StandartEvent GetEvent(string Name)
+        {
+            return Events.FirstOrDefault(s => s.Name == Name);
         }
     }
 
@@ -88,9 +96,20 @@ namespace EFModels
                 Edges[i] = new StandartEdge();
             }
         }
+
+        public List<int> GetNextEventNumbers()
+        {
+            List<int> NextEvents = new List<int>();
+            for (int i = 0; i < Edges.Count(); i++)
+            {
+                if (Edges[i].Trans)
+                    NextEvents.Add(i);
+            }
+            return NextEvents;
+        }
     }
 
-    //can make abstraction for many type of edge validation
+    //Можно создать абстракцию для множества типов связей (условия проверки)
     public class StandartEdge
     {
         public bool Trans { get; set; }
