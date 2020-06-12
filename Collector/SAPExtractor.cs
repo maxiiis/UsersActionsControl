@@ -79,7 +79,7 @@ namespace Collector
             LoadFromLocalQueue();
 
             //загрузка из tp.csv
-            var data = ExtractFromFile(10);
+            var data = ExtractFromFile();
 
             foreach (var d in data)
             {
@@ -200,9 +200,14 @@ namespace Collector
                 case "ResourseDepartment": user.Department = currentValue; break;
                 case "ResourseFilial": user.Filial = currentValue; break;
                 case "ResourseFIO":
-                    user.LastName = currentValue.Split(' ').ToArray()[0];
-                    user.FirstName = currentValue.Split(' ').ToArray()[1];
-                    user.MiddleName = currentValue.Split(' ').ToArray()[2];
+                    if (user.Department != null)
+                    {
+                        user.LastName = currentValue.Split(' ').ToArray()[0];
+                        user.FirstName = currentValue.Split(' ').ToArray()[1];
+                        user.MiddleName = currentValue.Split(' ').ToArray()[2];
+                    }
+                    else
+                        user.LastName = currentValue;
                     break;
                 case "STATUS_TEXT": logData.StatusText = currentValue; break;
             }
