@@ -8,8 +8,8 @@ namespace EFModels.LogsDB
         [Key]
         public long EventId { get; set; }
         public long CaseId { get; set; }
-        public string ResourseId { get; set; }
-        public User Resourse { get; set; }
+        public string ResourceId { get; set; }
+        public User Resource { get; set; }
         public string ActivityId { get; set; }
         public bool AnalysStatus { get; set; }
         public DateTime TimeStamp { get; set; }

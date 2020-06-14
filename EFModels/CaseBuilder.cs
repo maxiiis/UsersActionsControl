@@ -12,7 +12,7 @@ namespace EFModels
         {
             LogDBContext logDB = new LogDBContext();
 
-            var Events = logDB.EventLogs.Include(s => s.Resourse).Include(s => s.Activity).Where(b => b.CaseId == CaseId).OrderBy(b => b.TimeStamp).ToList();
+            var Events = logDB.EventLogs.Include(s => s.Resource).Include(s => s.Activity).Where(b => b.CaseId == CaseId).OrderBy(b => b.TimeStamp).ToList();
 
             Case newCase = new Case(CaseId);
 
@@ -28,7 +28,7 @@ namespace EFModels
         {
             //create only 1 BP
             LogDBContext logDB = new LogDBContext();
-            var s = logDB.EventLogs.Include(s => s.Activity).Include(s => s.Resourse).OrderBy(s => s.CaseId).ThenBy(s => s.TimeStamp).ToList();
+            var s = logDB.EventLogs.Include(s => s.Activity).Include(s => s.Resource).OrderBy(s => s.CaseId).ThenBy(s => s.TimeStamp).ToList();
 
             var groups = s.GroupBy(s => s.CaseId);
 
@@ -73,7 +73,7 @@ namespace EFModels
         public void UpdateCases()
         {
             LogDBContext logDB = new LogDBContext();
-            var s = logDB.EventLogs.Include(s => s.Activity).Include(s => s.Resourse).OrderBy(s => s.CaseId).ThenBy(s => s.TimeStamp).ToList();
+            var s = logDB.EventLogs.Include(s => s.Activity).Include(s => s.Resource).OrderBy(s => s.CaseId).ThenBy(s => s.TimeStamp).ToList();
 
             var groups = s.GroupBy(s => s.CaseId);
 

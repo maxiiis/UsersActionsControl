@@ -174,7 +174,7 @@ namespace Collector
                 }
 
                 log.Activity = logData;
-                log.Resourse = user;
+                log.Resource = user;
                 results.Add(log);
             }
 
@@ -188,7 +188,7 @@ namespace Collector
                 case "CaseId": log.CaseId = Convert.ToInt64(currentValue); break;
                 case "TimeStamp": log.TimeStamp = Convert.ToDateTime(currentValue); break;
                 case "Resourse":
-                    log.ResourseId = currentValue;
+                    log.ResourceId = currentValue;
                     user.Id = currentValue;
                     break;
                 case "Activity":
@@ -222,13 +222,13 @@ namespace Collector
             {
                 EventLog eventLog = JsonSerializer.Deserialize<EventLog>(Queue.Dequeue());
 
-                if (context.Users.FirstOrDefault(s => s.Id == eventLog.ResourseId) == null)
-                    context.Users.Add(eventLog.Resourse);
+                if (context.Users.FirstOrDefault(s => s.Id == eventLog.ResourceId) == null)
+                    context.Users.Add(eventLog.Resource);
                 if (context.Activities.FirstOrDefault(s => s.Id == eventLog.ActivityId) == null)
                     context.Activities.Add(eventLog.Activity);
 
                 eventLog.Activity = null;
-                eventLog.Resourse = null;
+                eventLog.Resource = null;
                 if (context.EventLogs.FirstOrDefault(s => s.CaseId == eventLog.CaseId && s.TimeStamp == eventLog.TimeStamp) == null)
                     context.EventLogs.Add(eventLog);
                 try
