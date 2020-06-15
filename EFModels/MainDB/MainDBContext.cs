@@ -1,6 +1,7 @@
 ﻿
 
 using Microsoft.EntityFrameworkCore;
+using System.Dynamic;
 
 namespace EFModels.MainDB
 {
@@ -13,6 +14,7 @@ namespace EFModels.MainDB
         public DbSet<System> Systems { get; set; }
         public DbSet<BP> BPs { get; set; }
         public DbSet<BPCase> BPCases { get; set; }
+        public DbSet<Alert> Alerts { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

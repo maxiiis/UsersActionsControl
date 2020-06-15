@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -14,6 +15,8 @@ namespace EFModels.MainDB
         public long BPId { get; set; }
 
         public BP BP { get; set; }
+
+        public List<Alert> Alerts { get; set; }
 
     }
 }

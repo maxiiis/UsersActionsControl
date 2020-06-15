@@ -18,5 +18,7 @@ namespace EFModels.MainDB
         public StandartCase StandartCase { get; set; }
         public System System { get; set; }
         public List<BPCase> BPCases { get; set; }
+
+        public List<Alert> Alerts { get; set; }
     }
 }
