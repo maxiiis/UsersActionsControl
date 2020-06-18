@@ -70,7 +70,7 @@ namespace EFModels
             return standart;
         }
 
-        public void UpdateCases()
+        private void UpdateCases()
         {
             LogDBContext logDB = new LogDBContext();
             var s = logDB.EventLogs.Include(s => s.Activity).Include(s => s.Resource).OrderBy(s => s.CaseId).ThenBy(s => s.TimeStamp).ToList();

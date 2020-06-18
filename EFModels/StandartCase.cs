@@ -47,19 +47,25 @@ namespace EFModels
             Events[0].Edges[20].deltaTime = new TimeSpan(30, 0, 0, 0);
 
             Events[1].Edges[2].Trans = true;
+            Events[1].Edges[2].deltaTime = new TimeSpan(2, 0,0, 0);
             Events[2].Edges[3].Trans = true;
-            
+            Events[2].Edges[3].deltaTime = new TimeSpan(7, 0,0, 0);
             Events[3].Edges[4].Trans = true;
+            Events[3].Edges[4].deltaTime = new TimeSpan(2, 0, 0, 0);
             Events[4].Edges[5].Trans = true;
+            
             Events[5].Edges[6].Trans = true;
             Events[6].Edges[7].Trans = true;
+            Events[6].Edges[7].deltaTime = new TimeSpan(7, 0, 0, 0);
             Events[7].Edges[8].Trans = true;
             Events[8].Edges[9].Trans = true;
+            Events[8].Edges[9].deltaTime = new TimeSpan(7, 0, 0, 0);
             Events[9].Edges[10].Trans = true;
             Events[10].Edges[11].Trans = true;
             Events[11].Edges[12].Trans = true;
             Events[12].Edges[13].Trans = true;
             Events[13].Edges[14].Trans = true;
+            Events[13].Edges[14].deltaTime = new TimeSpan(7, 0, 0, 0);
             Events[14].Edges[15].Trans = true;
             Events[16].Edges[17].Trans = true;
             Events[17].Edges[18].Trans = true;

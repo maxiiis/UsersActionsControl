@@ -14,6 +14,7 @@ namespace EFModels
         public long CaseId { get; set; }
         public string Text { get; set; }
 
+        public string Type { get; set; }
         public BP BP { get; set; }
         [ForeignKey("CaseId")]
         public BPCase BPCase { get; set; }
