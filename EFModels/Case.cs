@@ -6,6 +6,7 @@ namespace EFModels
 {
     public class Case
     {
+        public long BPId { get; set; }
         public Event Begin { get; set; }
         public List<Event> Events { get; set; }
         public long CaseId { get; set; }
@@ -103,6 +104,7 @@ namespace EFModels
         public string Name { get; set; }
         public DateTime TimeStamp { get; set; }
         public int Count { get; set; }
+        public string ResourceId { get; set; }
 
         public Event(string name)
         {
@@ -125,6 +127,7 @@ namespace EFModels
             Previous = new List<Event>();
             Previous.AddRange(@event.Previous);
             TimeStamp = @event.TimeStamp;
+            ResourceId = @event.ResourceId;
             Count = 1;
         }
 

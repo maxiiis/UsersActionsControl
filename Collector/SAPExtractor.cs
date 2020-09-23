@@ -2,10 +2,8 @@
 using ERPConnect;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text.Json;
 using System.Xml.XPath;
 
@@ -57,8 +55,11 @@ namespace Collector
             SaveInLocalQueue();
             Connection.Close();
         }
-
         public override void ExtractData()
+        {
+            //throw new NotImplementedException();
+        }
+        public void ExtractData(int count = 0,int start=0)
         {
 #if DEBUG
             RFCFunction function = Connection.CreateFunction(FunctionName);
@@ -79,7 +80,7 @@ namespace Collector
             LoadFromLocalQueue();
 
             //загрузка из tp.csv
-            var data = ExtractFromFile();
+            var data = ExtractFromFile(count,start);
 
             foreach (var d in data)
             {
@@ -95,7 +96,7 @@ namespace Collector
         {
             List<EventLog> results = new List<EventLog>();
 
-            XPathDocument document = new XPathDocument("tp.xml");
+            XPathDocument document = new XPathDocument(@"Files/tp.xml");
             XPathNavigator navigator = document.CreateNavigator();
 
             //навигация по xml к строкам
@@ -200,14 +201,17 @@ namespace Collector
                 case "ResourseDepartment": user.Department = currentValue; break;
                 case "ResourseFilial": user.Filial = currentValue; break;
                 case "ResourseFIO":
-                    if (user.Department != null)
+                    var split = currentValue.Split(' ').ToArray();
+                    if (split.Count() > 1)
                     {
                         user.LastName = currentValue.Split(' ').ToArray()[0];
                         user.FirstName = currentValue.Split(' ').ToArray()[1];
                         user.MiddleName = currentValue.Split(' ').ToArray()[2];
                     }
                     else
+                    {
                         user.LastName = currentValue;
+                    }
                     break;
                 case "STATUS_TEXT": logData.StatusText = currentValue; break;
             }

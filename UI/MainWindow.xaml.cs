@@ -25,5 +25,33 @@ namespace UI
             new Systems().ShowDialog();
             Show();
         }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            Hide();
+            new Logs().ShowDialog();
+            Show();
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            Hide();
+            new Alerts().ShowDialog();
+            Show();
+        }
+
+        private void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+            Hide();
+            new Users().ShowDialog();
+            Show();
+        }
+
+        private void Button_Click_4(object sender, RoutedEventArgs e)
+        {
+            Hide();
+            new Parametres().ShowDialog();
+            Show();
+        }
     }
 }

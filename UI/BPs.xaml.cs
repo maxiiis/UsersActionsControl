@@ -1,33 +1,36 @@
 ﻿using EFModels;
-using EFModels.MainDB;
-using Microsoft.Msagl.Core.Layout;
 using Microsoft.Msagl.Drawing;
 using Microsoft.Msagl.Layout.Layered;
 using System;
-using System.Data;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using Node = Microsoft.Msagl.Drawing.Node;
 using Edge = Microsoft.Msagl.Drawing.Edge;
+using Controller;
 
 namespace UI
 {
-    /// <summary>
-    /// Логика взаимодействия для BPs.xaml
-    /// </summary>
     public partial class BPs : Window
     {
         private int Stage = 0;
         private long BPId;
         private bool IsStandart;
         private string BPName;
+        private BPsControl BPsControl = new BPsControl();
 
         public BPs()
         {
             InitializeComponent();
-
             ChangeStage(0);
+        }
+
+        public BPs(long BPId, long @case = 0)
+        {
+            InitializeComponent();
+            this.BPId = BPId;
+            BPName = BPsControl.GetBPName(BPId);
+            ChangeStage(1, BPId);
+            BPLabel.Content = $"Модель бизнес-процесса: {BPName}";
         }
 
         private void openCases_Click(object sender, RoutedEventArgs e)
@@ -48,36 +51,34 @@ namespace UI
                 Close();
         }
 
-        private void ChangeStage(int stage)
+        private void ChangeStage(int stage, long BPId = 0)
         {
-            MainDBContext mainDB = new MainDBContext();
             switch (stage)
             {
                 case 0:
-                    var BPs = mainDB.BPs.Select(
-                        b => new BPdto
-                        {
-                            Номер = b.Id,
-                            Система = b.System.Name,
-                            Название = b.Name
-                        }).ToList();
+
+                    var BPs = BPsControl.GetBP();
+
                     dataGrid.ItemsSource = BPs;
                     openCases.Visibility = Visibility.Visible;
                     openCasesSeparator.Visibility = Visibility.Visible;
+                    statusCount.Text = $"Всего БП: {BPs.Count}";
                     break;
                 case 1:
                     BPdto selectedRow = dataGrid.SelectedItem as BPdto;
-                    var BPId = Convert.ToInt32(selectedRow.Номер);
+                    if (selectedRow != null)
+                    {
+                        long BPid = BPId;
+                        if (BPId == 0)
+                            BPid = Convert.ToInt32(selectedRow.Номер);
 
-                    var Cases = mainDB.BPCases.Where(b => b.BPId == BPId).ToList();
-                    dataGrid.ItemsSource = Cases;
-                    
-                    dataGrid.Columns[1].Visibility = Visibility.Collapsed;
-                    dataGrid.Columns[2].Visibility = Visibility.Collapsed;
-                    //TODO: добавить время начала и конца
-                    openCases.Visibility = Visibility.Collapsed;
-                    openCasesSeparator.Visibility = Visibility.Collapsed;
+                        var Cases = BPsControl.GetCases();
 
+                        dataGrid.ItemsSource = Cases;
+                        openCases.Visibility = Visibility.Collapsed;
+                        openCasesSeparator.Visibility = Visibility.Collapsed;
+                        statusCount.Text = $"Всего случаев: {Cases.Count}";
+                    }
                     break;
             }
 
@@ -93,8 +94,8 @@ namespace UI
                 if (Stage == 1)
                 {
                     //visualize case
-                    BPCase selectedRow = dataGrid.SelectedItem as BPCase;
-                    var CaseId = selectedRow.CaseId;
+                    var selectedRow = dataGrid.SelectedItem as Controller.BPCasedto;
+                    var CaseId = selectedRow.НомерСлучая;
                     if (CaseId == -1)
                     {
                         if (IsStandart)
@@ -117,25 +118,29 @@ namespace UI
                         newCase = new CaseBuilder().CreateCase(CaseId);
                         SelectCase(newCase);
                     }
+                    statusCurrent.Text = $"Текущий случай: {selectedRow.НомерСлучая}";
                 }
                 else
                 {
                     //build general case
                     var selectedBP = dataGrid.SelectedItem as BPdto;
 
-                    BPId = selectedBP.Номер;
+                    if (selectedBP != null)
+                    {
 
-                    MainDBContext mainDB = new MainDBContext();
-                    var BPname = mainDB.BPs.FirstOrDefault(s => s.Name == selectedBP.Название).Name;
-                    BPName = BPname;
+                        BPId = selectedBP.Номер;
 
-                    BPLabel.Content = $"Модель бизнес-процесса: {BPname}";
+                        var BPname = BPsControl.GetBPbyName(selectedBP.Название);
+                        BPName = BPname;
 
-                    newCase = new CaseBuilder().CreateGeneralCase();
+                        BPLabel.Content = $"Модель бизнес-процесса: {BPname}";
 
-                    graphControl1.Graph = null;
-                    graphControl1.Graph = Graph_Setup(newCase);
+                        newCase = new CaseBuilder().CreateGeneralCase();
 
+                        graphControl1.Graph = null;
+                        graphControl1.Graph = Graph_Setup(newCase);
+                        statusCurrent.Text = $"Текущий БП: {selectedBP.Номер}";
+                    }
                 }
             }
         }
@@ -226,9 +231,9 @@ namespace UI
                 {
                     node.Attr.Color = Color.Black;
                     //node.Attr.Color = new Color(byte.MaxValue, node.Attr.Color.R, node.Attr.Color.G, node.Attr.Color.B);
-                    
+
                     //edge.Attr.Color = node.Attr.Color;
-                    
+                    edge.LabelText = (i + 1).ToString();
                 }
                 node.Attr.LineWidth = 3;
                 edge.TargetNode.Attr.Color = node.Attr.Color;
@@ -307,15 +312,21 @@ namespace UI
         {
             e.Column.Width = new DataGridLength(1, DataGridLengthUnitType.Star);
         }
+
+        private void AnalyzeButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void OpenSource_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void OpenLogs_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
-
-    public class BPdto
-    {
-        public long Номер { get; set; }
-        public string Система { get; set; }
-        public string Название { get; set; }
-    }
-
-
 }
 

@@ -10,7 +10,8 @@ namespace EFModels.MainDB
         public long SystemId { get; set; }
         public string ConnectionString { get; set; }
         public string Source { get; set; }
-        public string SelectionCondition { get; set; }
+        [Column(TypeName = "json")]
+        public AccessMatrix AccessMatrix { get; set; }
         public string Name { get; set; }
         //для динамической генерации
         public string Structure { get; set; }

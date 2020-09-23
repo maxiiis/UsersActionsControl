@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Text;
 
 namespace EFModels
@@ -42,30 +43,31 @@ namespace EFModels
             }
 
             Events[0].Edges[1].Trans = true;
-            Events[0].Edges[1].deltaTime = new TimeSpan(30,0,0,0);
+            Events[0].Edges[1].deltaTime = new TimeSpan(15, 0, 0, 0).TotalSeconds;
             Events[0].Edges[20].Trans = true;
-            Events[0].Edges[20].deltaTime = new TimeSpan(30, 0, 0, 0);
+            Events[0].Edges[20].deltaTime = new TimeSpan(15, 0, 0, 0).TotalSeconds;
 
             Events[1].Edges[2].Trans = true;
-            Events[1].Edges[2].deltaTime = new TimeSpan(2, 0,0, 0);
+            Events[1].Edges[2].deltaTime = new TimeSpan(0, 0, 1,0).TotalSeconds;
             Events[2].Edges[3].Trans = true;
-            Events[2].Edges[3].deltaTime = new TimeSpan(7, 0,0, 0);
+            Events[2].Edges[3].deltaTime = new TimeSpan(0, 0, 2, 0).TotalSeconds;
             Events[3].Edges[4].Trans = true;
-            Events[3].Edges[4].deltaTime = new TimeSpan(2, 0, 0, 0);
+            Events[3].Edges[4].deltaTime = new TimeSpan(0, 0, 2, 0).TotalSeconds;
             Events[4].Edges[5].Trans = true;
-            
+
             Events[5].Edges[6].Trans = true;
+            Events[5].Edges[6].deltaTime = new TimeSpan(0, 0, 2, 0).TotalSeconds;
             Events[6].Edges[7].Trans = true;
-            Events[6].Edges[7].deltaTime = new TimeSpan(7, 0, 0, 0);
+            Events[6].Edges[7].deltaTime = new TimeSpan(0, 0, 3, 0).TotalSeconds;
             Events[7].Edges[8].Trans = true;
             Events[8].Edges[9].Trans = true;
-            Events[8].Edges[9].deltaTime = new TimeSpan(7, 0, 0, 0);
+            Events[8].Edges[9].deltaTime = new TimeSpan(0, 0, 3, 0).TotalSeconds;
             Events[9].Edges[10].Trans = true;
             Events[10].Edges[11].Trans = true;
             Events[11].Edges[12].Trans = true;
             Events[12].Edges[13].Trans = true;
             Events[13].Edges[14].Trans = true;
-            Events[13].Edges[14].deltaTime = new TimeSpan(7, 0, 0, 0);
+            Events[13].Edges[14].deltaTime = new TimeSpan(3, 0, 3, 0).TotalSeconds;
             Events[14].Edges[15].Trans = true;
             Events[16].Edges[17].Trans = true;
             Events[17].Edges[18].Trans = true;
@@ -97,7 +99,7 @@ namespace EFModels
         public void CreateEdges(int Count)
         {
             Edges = new StandartEdge[Count];
-            for (int i=0;i<Count;i++)
+            for (int i = 0; i < Count; i++)
             {
                 Edges[i] = new StandartEdge();
             }
@@ -119,6 +121,7 @@ namespace EFModels
     public class StandartEdge
     {
         public bool Trans { get; set; }
-        public TimeSpan deltaTime { get; set; }
+        public double deltaTime { get; set; }
+
     }
 }

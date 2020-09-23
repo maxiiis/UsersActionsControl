@@ -1,24 +1,28 @@
-﻿using EFModels.LogsDB;
+﻿using EFModels;
+using EFModels.LogsDB;
 using EFModels.MainDB;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace EFModels
+namespace Controller
 {
     public class CaseBuilder
     {
         public Case CreateCase(long CaseId)
         {
             LogDBContext logDB = new LogDBContext();
-
+            MainDBContext mainDB = new MainDBContext();
             var Events = logDB.EventLogs.Include(s => s.Resource).Include(s => s.Activity).Where(b => b.CaseId == CaseId).OrderBy(b => b.TimeStamp).ToList();
 
             Case newCase = new Case(CaseId);
-
+            newCase.BPId = mainDB.BPCases.FirstOrDefault(s => s.CaseId == CaseId).BPId;
             foreach (var e in Events)
             {
-                newCase.Add(new Event(e.Activity.ActivityText2) { TimeStamp = e.TimeStamp });
+                Event @event = new Event(e.Activity.ActivityText2) { TimeStamp = e.TimeStamp };
+                if (e.Resource.Department != null)
+                    @event.ResourceId = e.ResourceId;
+                newCase.Add(@event);
             }
 
             return newCase;
